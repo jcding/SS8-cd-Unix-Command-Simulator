@@ -60,7 +60,7 @@ CXXFLAGS = -std=c++1z -Wconversion -Wall -Werror -Wextra -pedantic
 
 # make release - will compile "all" with $(CXXFLAGS) and the -O3 flag
 #				 also defines NDEBUG so that asserts will not check
-release: CXXFLAGS += -O3 -DNDEBUG
+release: CXXFLAGS += -O3
 release: all
 
 # make debug - will compile "all" with $(CXXFLAGS) and the -g flag

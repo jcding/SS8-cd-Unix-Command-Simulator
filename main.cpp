@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cassert>
 
 using namespace std;
 
@@ -47,7 +48,7 @@ string execute_instruct(string &start_dir, string& og_end_dir, vector<string> in
 }
 
 
-string mycd(string start_dir, string &end_dir){
+string mycd(string start_dir, string end_dir){
     vector<string> instructions;
     string og_end_dir = end_dir;
     string placeholder = start_dir;
@@ -67,7 +68,7 @@ string mycd(string start_dir, string &end_dir){
         }
     }
 
-    cout << "after parsing for duplicated '/': " << end_dir << endl;
+    // cout << "after parsing for duplicated '/': " << end_dir << endl;
 
     // if the end_dir starts with '/' just return the end_dir
     if(end_dir[0] == '/'){
@@ -89,33 +90,81 @@ string mycd(string start_dir, string &end_dir){
             instructions.push_back(instruction);
         }
 
-        cout << "instructions:" << endl;
-        for(unsigned int i = 0; i < instructions.size(); i++){
-            cout << instructions[i] << endl;
-        }
-        cout << "*****************************" << endl;
+        // cout << "instructions:" << endl;
+        // for(unsigned int i = 0; i < instructions.size(); i++){
+        //     cout << instructions[i] << endl;
+        // }
+        // cout << "*****************************" << endl;
     }
 
     return execute_instruct(start_dir, og_end_dir, instructions);
 }
 
+void tests(){
+    assert(mycd("/", "abc") == "/abc");
+    cout << "test1 correct"<< endl;
+
+    assert(mycd("/abc/def", "ghi") == "/abc/def/ghi");
+    cout << "test2 correct"<< endl;
+    
+    assert(mycd("/abc/def", "..") == "/abc");
+    cout << "test3 correct"<< endl;
+
+    assert(mycd("/abc/def", "/abc") == "/abc");
+    cout << "test4 correct"<< endl;
+
+    assert(mycd("/abc/def", "/abc/klm") == "/abc/klm");
+    cout << "test5 correct"<< endl;
+
+    assert(mycd("/abc/def", "../..") == "/");
+    cout << "test6 correct"<< endl;
+
+    assert(mycd("/abc/def", "../../..") == "/");
+    cout << "test7 correct"<< endl;
+
+    assert(mycd("/abc/def", ".") == "/abc/def");
+    cout << "test8 correct"<< endl;
+
+    assert(mycd("/abc/def", "..klm") == "..klm: No such file or directory");
+    cout << "test9 correct"<< endl;
+
+    assert(mycd("/abc/def", "//////") == "/");
+    cout << "test10 correct"<< endl;
+
+    assert(mycd("/abc/def", "......") == "......: No such file or directory");
+    cout << "test11 correct"<< endl;
+
+    assert(mycd("/abc/def", "../gh///../klm/.") == "/abc/klm");
+    cout << "test12 correct"<< endl;
+}
+
+
+
 int main(int argc, char** argv){
 
-    if(argc != 3){
+    if(argc != 3 && argc != 2){
+        cout << "USAGE: ./mycd test" << endl;
         cout << "USAGE: ./mycd (starting directory) (end directory)" << endl;
         return 0;
     }
+    
+    string argv1 = argv[1];
+    
+    if(argv1 == "test"){
+        tests();
+    }
+    else{
+        string start_dir = argv[1];
+        string end_dir = argv[2];
+        // end_dir 
+
+        // cout << start_dir << endl;
+        // cout << end_dir << endl;
+
+        cout << "result: "+ mycd(start_dir, end_dir) << endl;
+    }
 
     
-
-    string start_dir = argv[1];
-    string end_dir = argv[2];
-    // end_dir 
-
-    // cout << start_dir << endl;
-    // cout << end_dir << endl;
-
-    cout << "result: "+ mycd(start_dir, end_dir) << endl;
 
 
     return 0;
